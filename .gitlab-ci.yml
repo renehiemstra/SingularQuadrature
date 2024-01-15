@@ -1,0 +1,36 @@
+image: julia:1.5 # image comes from Docker hub
+
+variables:
+  DOC_TEST_DEPLOY: "yes" # if set to "yes", docs will fix jldoctests (round-up error, etc...)
+
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )' # install ssh-agent
+  - eval $(ssh-agent -s)  # run ssh-agent
+  - apt -y install qt5-default git # needed if docs use `Plots` and Documenter
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")  # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
+  # disable host key checking (NOTE: makes you susceptible to man-in-the-middle attacks)
+  # WARNING: use only in docker container, if you use it with shell you will overwrite your user's ssh config
+  - mkdir -p ~/.ssh
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  - SSH_KEY_PATH="$SSH_PRIVATE_KEY" julia --project=@. .gitlab-ci_prep.jl
+      
+default:
+  script:
+    - julia --project=@. -e "import Pkg; Pkg.test(; coverage = true)"
+  # Uncomment after_script section, if you've set up the Codecov pipeline (see README.md)
+  after_script:
+    - julia --project=test/coverage -e 'import Pkg; Pkg.instantiate()'
+    - julia --project=test/coverage test/coverage/coverage-summary.jl
+    - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+
+pages:
+  stage: deploy
+  script:
+    - julia --project=docs -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); '
+    - julia --project=docs --color=yes docs/make.jl
+    - mv docs/build public # move to the directory picked up by Gitlab pages
+  artifacts:
+    paths:
+      - public
+  only:
+  - master
