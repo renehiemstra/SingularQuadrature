@@ -2,3 +2,11 @@ name = "SingularQuadrature"
 uuid = "db682dff-56ae-4ca3-bf7a-c3e615ba1e29"
 authors = ["rrhiemstar <rrhiemstar@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+CartesianProducts = "ddfd9c64-15e7-45fc-8e16-950f3835cae5"
+FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
+KroneckerProducts = "5766f8de-d509-470a-8420-f491b24ab91b"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"

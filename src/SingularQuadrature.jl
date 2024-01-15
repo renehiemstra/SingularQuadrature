@@ -1,5 +1,10 @@
 module SingularQuadrature
 
-greet() = print("Hello World!")
+using FastGaussQuadrature, CartesianProducts, KroneckerProducts
+
+include("base.jl")
+include("mappings.jl")
+include("bernstein.jl")
+include("gaussquad.jl")
 
 end # module SingularQuadrature
