@@ -1,0 +1,4 @@
+name = "SingularQuadrature"
+uuid = "db682dff-56ae-4ca3-bf7a-c3e615ba1e29"
+authors = ["rrhiemstar <rrhiemstar@gmail.com>"]
+version = "0.1.0"
